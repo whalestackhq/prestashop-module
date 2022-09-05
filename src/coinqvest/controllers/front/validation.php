@@ -162,7 +162,7 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
             Tools::redirect($link->getPageLink('order', true, null, 'step=1&error=' . $error));
         }
 
-        $decimals = (int) strpos(strrev($order->total_paid), ".");
+        $decimals = (int) strpos(strrev((float)$order->total_paid), ".");
 
         if ($order->total_paid != round($data['total'], $decimals)) {
 
@@ -234,5 +234,4 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         Tools::redirect($url);
 
     }
-
 }
