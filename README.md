@@ -29,20 +29,20 @@ Requirements
 * Prestashop >= 1.7
 * PHP >= 5.6
 
-Installation as Plugin
+Installation
 ---------------------
 **Requirements**
 
 * A COINQVEST merchant account -> Sign up [here](https://www.coinqvest.com)
 
-**Plugin Installation**
+**Module Installation**
 
 1. Download the module from [Github](https://github.com/COINQVEST/prestashop-module).
 1. Turn off debug mode during installation (in Prestashop > Advanced Parameters > Performance).
 1. Zip the `coinqvest` folder and upload it in the Prestashop module manager. Or copy the entire `coinqvest` folder to the `/modules/` directory.
 1. Configure the module in the Prestashop module manager.
 
-**Plugin Configuration**
+**Module Configuration**
 
 1. Get your [API key and secret](https://www.coinqvest.com/en/api-settings) from your COINQVEST merchant account.
 1. Enter API key and secret in the module configuration.
