@@ -46,7 +46,7 @@ Installation
 
 1. Get your [API key and secret](https://www.coinqvest.com/en/api-settings) from your COINQVEST merchant account.
 1. Enter API key and secret in the module configuration.
-1. Completed payments will automatically update Prestashop orders to 'Payment accepted'.
+1. Completed payments will automatically update Prestashop orders to `Payment accepted`.
 1. Manage all payments and refunds in your [merchant account](https://www.coinqvest.com). You will be notified by email about every new payment.
 
 **White-label Setup**

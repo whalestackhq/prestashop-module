@@ -234,5 +234,4 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         Tools::redirect($url);
 
     }
-
 }
