@@ -54,7 +54,6 @@ class Helpers {
         $iv = chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0);
         $encrypted = base64_encode(openssl_encrypt($string, $method, $sSalt, OPENSSL_RAW_DATA, $iv));
         return $encrypted;
-
     }
 
     public static function decrypt($string, $salt)
@@ -64,7 +63,6 @@ class Helpers {
         $iv = chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0);
         $decrypted = openssl_decrypt(base64_decode($string), $method, $sSalt, OPENSSL_RAW_DATA, $iv);
         return $decrypted;
-
     }
 
     public static function generateRandomString($length = 10)
@@ -77,8 +75,4 @@ class Helpers {
         }
         return $randomString;
     }
-
-
-
-
 }

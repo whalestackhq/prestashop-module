@@ -122,7 +122,6 @@ class Coinqvest extends PaymentModule
                 Configuration::updateValue('COINQVEST_UNDERPAID', $orderStateUnderpaid->id);
             }
         }
-
         return true;
     }
 
@@ -143,7 +142,6 @@ class Coinqvest extends PaymentModule
 
         $this->_html .= $this->displayCoinqvestInfo();
         $this->_html .= $this->renderConfigForm();
-
         return $this->_html;
     }
 
@@ -193,7 +191,6 @@ class Coinqvest extends PaymentModule
                 $this->_postErrors[] = $this->l('Please choose a settlement asset.');
                 return;
             }
-
         }
     }
 
@@ -209,7 +206,6 @@ class Coinqvest extends PaymentModule
             Configuration::updateValue('COINQVEST_CHECKOUT_LANGUAGE', Tools::getValue('COINQVEST_CHECKOUT_LANGUAGE'));
             Configuration::updateValue('COINQVEST_LOGO_DISPLAY', Tools::getValue('COINQVEST_LOGO_DISPLAY'));
             Configuration::updateValue('COINQVEST_LOGGING', Tools::getValue('COINQVEST_LOGGING'));
-
             $this->_html = $this->displayConfirmation($this->l('Settings updated'));
         }
     }
@@ -375,7 +371,6 @@ class Coinqvest extends PaymentModule
         $fields_value['COINQVEST_LOGO_DISPLAY'] = Tools::getValue('COINQVEST_LOGO_DISPLAY', Configuration::get('COINQVEST_LOGO_DISPLAY'));
         $fields_value['COINQVEST_LOGGING'] = Tools::getValue('COINQVEST_LOGGING', Configuration::get('COINQVEST_LOGGING'));
         $fields_value['COINQVEST_WHITELABEL'] = Tools::getValue('COINQVEST_WHITELABEL', Configuration::get('COINQVEST_WHITELABEL'));
-
         return $fields_value;
     }
 
@@ -398,7 +393,6 @@ class Coinqvest extends PaymentModule
         $payment_options = array(
             $newOption
         );
-
         return $payment_options;
     }
 
@@ -459,6 +453,4 @@ class Coinqvest extends PaymentModule
         $this->context->smarty->assign(array('checkoutId' => $checkoutId, 'refundId' => $refundId, 'display' => $display));
         return $this->fetch('module:coinqvest/views/templates/hook/order_details.tpl');
     }
-
-
 }
