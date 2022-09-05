@@ -3,7 +3,6 @@ use Coinqvest\Classes\Helpers;
 
 class CoinqvestValidationModuleFrontController extends ModuleFrontController
 {
-
     public function postProcess()
     {
         $cart = $this->context->cart;
@@ -58,6 +57,7 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         $orderDetails = new OrderDetail();
         $products = $orderDetails->getList($order->id);
         $link = new Link();
+        $logger = new Coinqvest\Classes\Api\CQLoggingService();
 
         $client = Helpers::initApi(Configuration::get('COINQVEST_API_KEY'), Helpers::decrypt(Configuration::get('COINQVEST_API_SECRET'), Configuration::get('COINQVEST_HASH')), Configuration::get('COINQVEST_LOGGING'));
 
@@ -85,6 +85,7 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         $data = json_decode($response->responseBody, true);
 
         if ($response->httpStatusCode != 200) {
+            $logger::write(print_r('[Validation] Failed to create customer. ' . json_encode($cqCustomer), true));
             $error = $this->l($data['errors'][0]);
             Tools::redirect($link->getPageLink('order', true, null, 'step=1&error=' . $error));
         }
@@ -156,6 +157,7 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         $data = json_decode($response->responseBody, true);
 
         if ($response->httpStatusCode != 200) {
+            $logger::write(print_r('[Validation] Failed to validate checkout. ' . json_encode($checkout), true));
             $error = $data['errors'][0];
             Tools::redirect($link->getPageLink('order', true, null, 'step=1&error=' . $error));
         }
@@ -207,6 +209,7 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         $data = json_decode($response->responseBody, true);
 
         if ($response->httpStatusCode != 200) {
+            $logger::write(print_r('[Validation] Failed to create checkout. ' . json_encode($checkout), true));
             $error = $this->l($data['errors'][0]);
             Tools::redirect($link->getPageLink('order', true, null, 'step=1&error=' . $error));
         }
@@ -220,7 +223,7 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
 
         $sql = "UPDATE " . _DB_PREFIX_ . "orders SET `coinqvest_checkout_id` = '" . pSQL($id) . "' WHERE id_order = " . (int)$order->id;
         if (!Db::getInstance()->execute($sql)) {
-            Tools::displayError('failed to create checkout');
+            $logger::write(print_r('[Validation] Failed to update order. ' . json_encode($checkout), true));
             Tools::redirect($cancelUrl);
         }
 
