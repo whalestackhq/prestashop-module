@@ -6,6 +6,8 @@ The module is available as a white-label crypto payment solution and allows you 
 
 This Prestashop module implements the COINQVEST [REST API](https://www.coinqvest.com/en/api-docs).
 
+For more details and how to get started with the Prestashop module please read the [installation guide](https://www.coinqvest.com/en/blog/how-to-accept-bitcoin-and-other-cryptocurrency-payments-with-coinqvest-for-prestashop-5136b3ad1161).
+
 Key Features
 ------------
 * Accepts Bitcoin (BTC), Ethereum (ETH), Stellar Lumens (XLM) and Litecoin (LTC) payments on your Prestashop from customers.

@@ -102,7 +102,6 @@ class CQMerchantClient extends CQRESTClient {
         $this->log("[CQMerchantClient][get] Request: GET $endpoint Params: " . json_encode($params) . " Auth Headers: " . json_encode($authHeaders));
         $this->log("[CQMerchantClient][get] Response: " . json_encode($response));
         return $response;
-
     }
 
     /**

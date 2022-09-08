@@ -1,4 +1,9 @@
-<form method="post" action="{$action}">
+{*
+*  @author 2022 COINQVEST
+*  @copyright 2022 COINQVEST
+*  @license https://www.apache.org/licenses/LICENSE-2.0
+*}
+<form method="post" action="{$action|escape:'htmlall':'UTF-8'}">
     <div style="padding-left:27px">
         {if $displayLogo}
             <img src="../modules/coinqvest/logo.png" style="float:left; margin-right:15px;" height="60">

@@ -1,11 +1,11 @@
 <?php
-
 /**
  * COINQVEST - Cryptocurrency Payment Gateway Module for PrestaShop 1.7
  *
  * This file is the declaration of the module.
  *
  * @author COINQVEST <service@coinqvest.com>
+ * @copyright 2022 COINQVEST
  * @license https://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -16,10 +16,8 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-
 include('classes/helpers.class.php');
 include('classes/api/CQMerchantClient.class.php');
-
 
 class Coinqvest extends PaymentModule
 {
@@ -85,7 +83,7 @@ class Coinqvest extends PaymentModule
         Configuration::updateValue('COINQVEST_LOGO_DISPLAY', 1);
         Configuration::updateValue('COINQVEST_LOGGING', 1);
         if (!Configuration::get('COINQVEST_HASH')) {
-            Configuration::updateValue('COINQVEST_HASH', Helpers::generateRandomString(30));
+            Configuration::updateValue('COINQVEST_HASH', $this->generateRandomString(30));
         }
         return true;
     }
@@ -452,5 +450,16 @@ class Coinqvest extends PaymentModule
 
         $this->context->smarty->assign(array('checkoutId' => $checkoutId, 'refundId' => $refundId, 'display' => $display));
         return $this->fetch('module:coinqvest/views/templates/hook/order_details.tpl');
+    }
+
+    private function generateRandomString($length = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = Tools::strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }
