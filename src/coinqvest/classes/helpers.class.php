@@ -1,13 +1,21 @@
 <?php
+/**
+ * @author COINQVEST <service@coinqvest.com>
+ * @copyright 2022 COINQVEST
+ * @license https://www.apache.org/licenses/LICENSE-2.0
+ */
 
 namespace COINQVEST\Classes;
+
+use Defuse\Crypto\Crypto;
 use COINQVEST\Classes\Api;
 
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class Helpers {
+class Helpers
+{
 
     public static function initApi($key, $secret, $log = 1)
     {
@@ -22,7 +30,10 @@ class Helpers {
         if ($response->httpStatusCode == 200) {
             $items = json_decode($response->responseBody);
             foreach ($items->assets as $asset) {
-                array_push($assets, array('id_option' => $asset->assetCode, 'name' => $asset->assetCode . ' - ' . $asset->name));
+                array_push($assets, array(
+                    'id_option' => $asset->assetCode,
+                    'name' => $asset->assetCode . ' - ' . $asset->name
+                ));
             }
         }
         return $assets;
@@ -35,8 +46,10 @@ class Helpers {
         if ($response->httpStatusCode == 200) {
             $langs = json_decode($response->responseBody);
             foreach ($langs->languages as $lang) {
-                array_push($languages, array('id_option' => $lang->languageCode, 'name' => $lang->languageCode . ' - ' . $lang->name));
-
+                array_push($languages, array(
+                    'id_option' => $lang->languageCode,
+                    'name' => $lang->languageCode . ' - ' . $lang->name
+                ));
             }
         }
         return $languages;
@@ -49,30 +62,16 @@ class Helpers {
 
     public static function encrypt($string, $salt)
     {
-        $sSalt = substr(hash('sha256', $salt, true), 0, 32);
-        $method = 'aes-256-cbc';
-        $iv = chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0);
-        $encrypted = base64_encode(openssl_encrypt($string, $method, $sSalt, OPENSSL_RAW_DATA, $iv));
-        return $encrypted;
+
+        return Crypto::encryptWithPassword($string, $salt);
     }
 
     public static function decrypt($string, $salt)
     {
-        $sSalt = substr(hash('sha256', $salt, true), 0, 32);
-        $method = 'aes-256-cbc';
-        $iv = chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0);
-        $decrypted = openssl_decrypt(base64_decode($string), $method, $sSalt, OPENSSL_RAW_DATA, $iv);
-        return $decrypted;
-    }
-
-    public static function generateRandomString($length = 10)
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        if (!$string)
+        {
+            return null;
         }
-        return $randomString;
+        return Crypto::decryptWithPassword($string, $salt);
     }
 }
