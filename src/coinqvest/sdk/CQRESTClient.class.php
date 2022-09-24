@@ -1,13 +1,19 @@
 <?php
-namespace COINQVEST\Classes\Api;
+/**
+ * @author COINQVEST <service@coinqvest.com>
+ * @copyright 2022 COINQVEST
+ * @license https://www.apache.org/licenses/LICENSE-2.0
+ */
+
+namespace COINQVEST\Sdk;
 
 /**
  * Class CQRESTClient
  *
  * The base class for the COINQVEST Merchant API client.
  */
-class CQRESTClient {
-
+class CQRESTClient
+{
     protected $scheme;
     protected $host;
     protected $path;
@@ -15,7 +21,8 @@ class CQRESTClient {
     protected $basicAuthUsername;
     protected $basicAuthPassword;
 
-    public function __construct($scheme = 'https', $host = 'www.example.com', $path = '/api', $port = null, $basicAuthUsername = null, $basicAuthPassword = null) {
+    public function __construct($scheme = 'https', $host = 'www.example.com', $path = '/api', $port = null, $basicAuthUsername = null, $basicAuthPassword = null)
+    {
         foreach (get_defined_vars() as $key => $value) {
             $this->$key = $value;
         }
@@ -33,8 +40,8 @@ class CQRESTClient {
      * @param array $customOptions
      * @return CQRESTClientResponseObject
      */
-    protected function sendRequest($endpoint, $requestType, $requestBody = array(), $sendAsJson = false, $query = array(), $headers = array(), $customOptions = array()) {
-
+    protected function sendRequest($endpoint, $requestType, $requestBody = array(), $sendAsJson = false, $query = array(), $headers = array(), $customOptions = array())
+    {
         $ch = curl_init($this->scheme . '://' . $this->host . $this->path . $endpoint . (!empty($query) ? '?' . http_build_query($query) : null));
         curl_setopt($ch, CURLOPT_PORT, $this->port ? $this->port : ($this->scheme == 'https' ? 443 : 80));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -57,17 +64,17 @@ class CQRESTClient {
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         switch ($requestType) {
-            case('POST'):
+            case ('POST'):
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $sendAsJson ? json_encode($requestBody) : $requestBody);
                 break;
-            case('GET'):
+            case ('GET'):
                 break;
-            case('DELETE'):
+            case ('DELETE'):
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $sendAsJson ? json_encode($requestBody) : $requestBody);
                 break;
-            case('PUT'):
+            case ('PUT'):
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $sendAsJson ? json_encode($requestBody) : $requestBody);
                 break;
@@ -101,7 +108,5 @@ class CQRESTClient {
         curl_close($ch);
 
         return $restClientResponseObject;
-
     }
-
 }

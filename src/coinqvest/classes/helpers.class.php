@@ -8,7 +8,7 @@
 namespace COINQVEST\Classes;
 
 use Defuse\Crypto\Crypto;
-use COINQVEST\Classes\Api;
+use COINQVEST\Sdk;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -19,7 +19,7 @@ class Helpers
 
     public static function initApi($key, $secret, $log = 1)
     {
-        $client = new Api\CQMerchantClient($key, $secret, $log);
+        $client = new Sdk\CQMerchantClient($key, $secret, $log);
         return $client;
     }
 
@@ -62,14 +62,12 @@ class Helpers
 
     public static function encrypt($string, $salt)
     {
-
         return Crypto::encryptWithPassword($string, $salt);
     }
 
     public static function decrypt($string, $salt)
     {
-        if (!$string)
-        {
+        if (!$string) {
             return null;
         }
         return Crypto::decryptWithPassword($string, $salt);

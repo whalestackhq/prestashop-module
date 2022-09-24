@@ -8,10 +8,6 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         $cart = $this->context->cart;
         $authorized = false;
 
-        /**
-         * Validation
-         */
-
         if (!$this->module->active || $cart->id_customer == 0 || $cart->id_address_delivery == 0 || $cart->id_address_invoice == 0) {
             Tools::redirect('index.php?controller=order&step=1');
         }
@@ -31,10 +27,6 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         if (!Validate::isLoadedObject($customer)) {
             Tools::redirect('index.php?controller=order&step=1');
         }
-
-        /**
-         * Place the PS order
-         */
 
         $this->module->validateOrder(
             (int) $this->context->cart->id,
@@ -57,13 +49,9 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         $orderDetails = new OrderDetail();
         $products = $orderDetails->getList($order->id);
         $link = new Link();
-        $logger = new Coinqvest\Classes\Api\CQLoggingService();
+        $logger = new Coinqvest\Sdk\CQLoggingService();
 
         $client = Helpers::initApi(Configuration::get('COINQVEST_API_KEY'), Helpers::decrypt(Configuration::get('COINQVEST_API_SECRET'), Configuration::get('COINQVEST_HASH')), Configuration::get('COINQVEST_LOGGING'));
-
-        /**
-         * COINQVEST customer object
-         */
 
         $cqCustomer = array(
             'email' => $customer->email,
@@ -91,10 +79,6 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         }
 
         $customer_id = $response->httpStatusCode == 200 ? $data['customerId'] : null;
-
-        /**
-         * COINQVEST checkout object
-         */
 
         $lineItems = array();
         if (isset($products) && !empty($products)) {
@@ -148,11 +132,6 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
             )
         );
 
-        /**
-         * Validate the checkout charge
-         * If Prestashop's order total does not match CQ's charge total, use simple checkout charge as fallback
-         */
-
         $response = $client->post('/checkout/validate-checkout-charge', $checkout);
         $data = json_decode($response->responseBody, true);
 
@@ -201,10 +180,6 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         $checkout['pageSettings']['cancelUrl'] = $cancelUrl;
         $checkout['meta'] = array('prestashopOrderId' => $order->id);
 
-        /**
-         * Post the checkout
-         */
-
         $response = $client->post('/checkout/hosted', $checkout);
         $data = json_decode($response->responseBody, true);
 
@@ -217,19 +192,11 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
         $id = $data['id'];
         $url = $data['url'];
 
-        /**
-         * Update order with CQ checkout id
-         */
-
-        $sql = "UPDATE " . _DB_PREFIX_ . "orders SET `coinqvest_checkout_id` = '" . pSQL($id) . "' WHERE id_order = " . (int)$order->id;
+        $sql = "INSERT INTO " . _DB_PREFIX_ . "coinqvest_orders (`order_id`, `coinqvest_checkout_id`) VALUES (" . (int)$order->id . ", '" . pSQL($id) . "')";
         if (!Db::getInstance()->execute($sql)) {
-            $logger::write(print_r('[Validation] Failed to update order. ' . json_encode($checkout), true));
+            $logger::write(print_r('[Validation] Failed to insert into table coinqvest_order. ' . json_encode($checkout), true));
             Tools::redirect($cancelUrl);
         }
-
-        /**
-         * Redirect to the CQ checkout page
-         */
 
         Tools::redirect($url);
 
