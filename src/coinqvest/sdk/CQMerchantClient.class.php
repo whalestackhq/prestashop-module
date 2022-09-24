@@ -1,5 +1,12 @@
 <?php
-namespace COINQVEST\Classes\Api;
+/**
+ * @author COINQVEST <service@coinqvest.com>
+ * @copyright 2022 COINQVEST
+ * @license https://www.apache.org/licenses/LICENSE-2.0
+ */
+
+namespace COINQVEST\Sdk;
+
 use COINQVEST\Classes\Helpers;
 
 include('CQRESTClient.class.php');
@@ -12,7 +19,8 @@ include('CQLoggingService.class.php');
  * PHP implementation of a REST client for the COINQVEST Merchant API
  * see https://www.coinqvest.com/en/api-docs
  */
-class CQMerchantClient extends CQRESTClient {
+class CQMerchantClient extends CQRESTClient
+{
 
     /**
      * The API Key as given by https://www.coinqvest.com/en/api-settings
@@ -20,7 +28,7 @@ class CQMerchantClient extends CQRESTClient {
      *
      * @var string
      */
-    var $key = null;
+    protected $key = null;
 
     /**
      * The API Secret as given by https://www.coinqvest.com/en/api-settings
@@ -28,28 +36,28 @@ class CQMerchantClient extends CQRESTClient {
      *
      * @var string
      */
-    var $secret = null;
+    protected $secret = null;
 
     /**
      * The API version to which we connect (leave it as is)
      *
      * @var string
      */
-    var $apiVersion = 'v1';
+    public $apiVersion = 'v1';
 
     /**
      * Used in the HTTP user agent (leave it as is)
      *
      * @var string
      */
-    var $clientName = 'php-merchant-sdk';
+    public $clientName = 'php-merchant-sdk';
 
     /**
      * The current version of this SDK, used in the HTTP user agent (leave it as is)
      *
      * @var string
      */
-    var $clientVersion = '1.0.0';
+    public $clientVersion = '1.0.0';
 
     /**
      * Indicates whether requests and responses should be logged
@@ -57,7 +65,7 @@ class CQMerchantClient extends CQRESTClient {
      *
      * @var boolean
      */
-    var $enableLogging = false;
+    public $enableLogging = false;
 
     /**
      * Specifies the log file to which to write, if any.
@@ -65,7 +73,7 @@ class CQMerchantClient extends CQRESTClient {
      *
      * @var string
      */
-    var $logFile = null;
+    public $logFile = null;
 
     /**
      * Merchant API client constructor, initialize this with the API key and secret as given by https://www.coinqvest.com/en/api-settings
@@ -74,8 +82,8 @@ class CQMerchantClient extends CQRESTClient {
      * @param string $secret Your COINQVEST API Secret
      * @param string $logFile Log file location, if any
      */
-    public function __construct($key = null, $secret = null, $logFile = null) {
-
+    public function __construct($key = null, $secret = null, $logFile = null)
+    {
         $this->key = $key;
         $this->secret = $secret;
 
@@ -94,8 +102,8 @@ class CQMerchantClient extends CQRESTClient {
      * @param array $params, a list of GET parameters to be included in the request
      * @return CQRESTClientResponseObject
      */
-    public function get($endpoint = '/', $params = array()) {
-
+    public function get($endpoint = '/', $params = array())
+    {
         $method = 'GET';
         $authHeaders = $this->buildAuthHeaders($endpoint, $method, $params);
         $response = parent::sendRequest($endpoint, $method, array(), false, $params, $authHeaders, $this->buildCustomOptions());
@@ -111,8 +119,8 @@ class CQMerchantClient extends CQRESTClient {
      * @param array $params, an array representing the JSON payload to include in this request
      * @return CQRESTClientResponseObject
      */
-    public function post($endpoint = '/', $params = array()) {
-
+    public function post($endpoint = '/', $params = array())
+    {
         $method = 'POST';
         $authHeaders = $this->buildAuthHeaders($endpoint, $method, $params);
         $response = $this->sendRequest($endpoint, $method, $params, true, array(), $authHeaders, $this->buildCustomOptions());
@@ -128,15 +136,14 @@ class CQMerchantClient extends CQRESTClient {
      * @param array $params, an array representing the JSON payload to include in this request
      * @return CQRESTClientResponseObject
      */
-    public function delete($endpoint = '/', $params = array()) {
-
+    public function delete($endpoint = '/', $params = array())
+    {
         $method = 'DELETE';
         $authHeaders = $this->buildAuthHeaders($endpoint, $method, $params);
         $response = $this->sendRequest($endpoint, $method, $params, true, array(), $authHeaders, $this->buildCustomOptions());
         $this->log("[CQMerchantClient][delete] Request: DELETE $endpoint Params: " . json_encode($params) . " Auth Headers: " . json_encode($authHeaders));
         $this->log("[CQMerchantClient][delete] Response: " . json_encode($response));
         return $response;
-
     }
 
     /**
@@ -146,15 +153,14 @@ class CQMerchantClient extends CQRESTClient {
      * @param array $params, an array representing the JSON payload to include in this request
      * @return CQRESTClientResponseObject
      */
-    public function put($endpoint = '/', $params = array()) {
-
+    public function put($endpoint = '/', $params = array())
+    {
         $method = 'PUT';
         $authHeaders = $this->buildAuthHeaders($endpoint, $method, $params);
         $response = $this->sendRequest($endpoint, $method, $params, true, array(), $authHeaders, $this->buildCustomOptions());
         $this->log("[CQMerchantClient][put] Request: PUT $endpoint Params: " . json_encode($params) . " Auth Headers: " . json_encode($authHeaders));
         $this->log("[CQMerchantClient][put] Response: " . json_encode($response));
         return $response;
-
     }
 
     /**
@@ -165,8 +171,8 @@ class CQMerchantClient extends CQRESTClient {
      * @param array $params
      * @return array
      */
-    private function buildAuthHeaders($path, $method, $params = array()) {
-
+    private function buildAuthHeaders($path, $method, $params = array())
+    {
         $timestamp = self::fetchTimestamp();
         $body = $method != 'GET' ? (count($params) ? json_encode($params) : null) : null;
         $origin = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : null;
@@ -178,7 +184,6 @@ class CQMerchantClient extends CQRESTClient {
             'X-Origin-URL: ' . $origin,
             'X-Plugin-Data: ' . Helpers::getModuleVersion()
         );
-
     }
 
     /**
@@ -186,8 +191,8 @@ class CQMerchantClient extends CQRESTClient {
      *
      * @return int
      */
-    private function fetchTimestamp() {
-
+    private function fetchTimestamp()
+    {
         $timestamp = time();
         $client = new CQRESTClient('https', 'www.coinqvest.com', '/api/v1');
 
@@ -198,7 +203,6 @@ class CQMerchantClient extends CQRESTClient {
 
         $data = json_decode($response->responseBody, true);
         return is_null($data) ? $timestamp : $data['time'];
-
     }
 
     /**
@@ -206,10 +210,9 @@ class CQMerchantClient extends CQRESTClient {
      *
      * @return array
      */
-    private function buildCustomOptions() {
-
+    private function buildCustomOptions()
+    {
         return array(CURLOPT_USERAGENT => $this->clientName . ' ' . $this->clientVersion . ' (' . $this->key . ')');
-
     }
 
     /**
@@ -217,21 +220,11 @@ class CQMerchantClient extends CQRESTClient {
      *
      * @param $message
      */
-    private function log($message) {
-
+    private function log($message)
+    {
         if (!$this->enableLogging) {
             return;
         }
-
         CQLoggingService::write($message, $this->logFile);
-
     }
-
 }
-
-
-
-
-
-
-

@@ -1,12 +1,14 @@
 <?php
-namespace COINQVEST\Classes\Api;
-
 /**
- * Class CQLoggingService
- *
- * A logging service
+ * @author COINQVEST <service@coinqvest.com>
+ * @copyright 2022 COINQVEST
+ * @license https://www.apache.org/licenses/LICENSE-2.0
  */
-class CQLoggingService {
+
+namespace COINQVEST\Sdk;
+
+class CQLoggingService
+{
 
     /**
      * Writes to a log file and prepends current time stamp
@@ -14,8 +16,8 @@ class CQLoggingService {
      * @param $message
      * @param $log
      */
-    public static function write($message, $log = 1) {
-
+    public static function write($message, $log = 1)
+    {
         if ($log == 1) {
             $logFile = _PS_ROOT_DIR_ . '/var/logs/coinqvest.log';
 
@@ -25,5 +27,4 @@ class CQLoggingService {
             fclose($file);
         }
     }
-
 }

@@ -17,7 +17,7 @@ if (!defined('_PS_VERSION_')) {
 }
 
 include('classes/helpers.class.php');
-include('classes/api/CQMerchantClient.class.php');
+include('sdk/CQMerchantClient.class.php');
 
 class Coinqvest extends PaymentModule
 {
@@ -31,7 +31,7 @@ class Coinqvest extends PaymentModule
     {
         $this->name                   = 'coinqvest';
         $this->tab                    = 'payments_gateways';
-        $this->version                = '1.0.0';
+        $this->version                = '1.0.1';
         $this->author                 = 'COINQVEST';
         $this->controllers            = array('validation', 'webhook');
         $this->currencies             = true;
@@ -58,7 +58,7 @@ class Coinqvest extends PaymentModule
             && $this->registerHook('displayAdminOrderTabContent')
             && $this->addConfigFields()
             && $this->addOrderStates()
-            && $this->alterOrderTable();
+            && $this->createCoinqvestTable();
     }
 
     public function uninstall()
@@ -88,14 +88,15 @@ class Coinqvest extends PaymentModule
         return true;
     }
 
-    public function alterOrderTable()
+    public function createCoinqvestTable()
     {
-        if (!Db::getInstance()->execute('SELECT coinqvest_checkout_id from ' . _DB_PREFIX_ . 'orders')) {
-            Db::getInstance()->execute('ALTER TABLE ' . _DB_PREFIX_ . 'orders ADD `coinqvest_checkout_id` VARCHAR(20) DEFAULT NULL;');
-        }
-        if (!Db::getInstance()->execute('SELECT coinqvest_refund_id from ' . _DB_PREFIX_ . 'orders')) {
-            Db::getInstance()->execute('ALTER TABLE ' . _DB_PREFIX_ . 'orders ADD `coinqvest_refund_id` VARCHAR(20) DEFAULT NULL;');
-        }
+        Db::getInstance()->execute('CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'coinqvest_orders` (
+            `id` serial NOT NULL AUTO_INCREMENT,
+            `order_id` BIGINT(20) DEFAULT NULL,
+            `coinqvest_checkout_id` VARCHAR(20) DEFAULT NULL,
+            `coinqvest_refund_id` VARCHAR(20) DEFAULT NULL,
+            PRIMARY KEY (`id`)
+        );');
         return true;
     }
 
@@ -421,7 +422,7 @@ class Coinqvest extends PaymentModule
         }
 
         $order = new Order($params['id_order']);
-        $sql = "SELECT `coinqvest_checkout_id`, `coinqvest_refund_id` FROM " . _DB_PREFIX_ . "orders WHERE id_order = " . (int)$order->id;
+        $sql = "SELECT `coinqvest_checkout_id`, `coinqvest_refund_id` FROM " . _DB_PREFIX_ . "coinqvest_orders WHERE order_id = " . (int)$order->id;
         $result = Db::getInstance()->getRow($sql);
         $checkoutId = !is_null ($result['coinqvest_checkout_id']) ? $result['coinqvest_checkout_id'] : null;
         $refundId = !is_null ($result['coinqvest_refund_id']) ? $result['coinqvest_refund_id'] : null;

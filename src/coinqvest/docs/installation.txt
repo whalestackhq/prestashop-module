@@ -1,0 +1,2 @@
+Please see the guide for detailed installation and configuration instructions:
+https://www.coinqvest.com/en/blog/how-to-accept-bitcoin-and-other-cryptocurrency-payments-with-coinqvest-for-prestashop-5136b3ad1161

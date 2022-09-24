@@ -10,8 +10,8 @@ For more details and how to get started with the Prestashop module please read t
 
 Key Features
 ------------
-* Accepts Bitcoin (BTC), Ethereum (ETH), Stellar Lumens (XLM) and Litecoin (LTC) payments on your Prestashop from customers.
-* Instantly settles in your preferred national currency (USD, EUR, ARS, BRL, NGN) or cryptocurrency (BTC, ETH, LTC, XLM).
+* Accepts Bitcoin (BTC), Ethereum (ETH), Stellar Lumens (XLM), Litecoin (LTC), Bitcoin Lightning (BTC LN) payments on your Prestashop from customers.
+* Instantly settles in your preferred national currency (USD, EUR, ARS, BRL, NGN) or cryptocurrency (BTC, ETH, LTC, XLM, BTC LN).
 * 50 billing currencies are available, see full list [here](https://www.coinqvest.com/en/api-docs#get-exchange-rate-global).
 * Integrates seemlessly into your Prestashop website.
 * Sets the product price in your national currency.

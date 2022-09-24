@@ -3,10 +3,9 @@ use Coinqvest\Classes\Helpers;
 
 class CoinqvestWebhookModuleFrontController extends ModuleFrontController
 {
-
     public function postProcess()
     {
-        $logger = new Coinqvest\Classes\Api\CQLoggingService();
+        $logger = new Coinqvest\Sdk\CQLoggingService();
         $payload = file_get_contents("php://input");
         $requestHeaders = array_change_key_case($this->getRequestHeaders(), CASE_UPPER);
 
@@ -29,13 +28,9 @@ class CoinqvestWebhookModuleFrontController extends ModuleFrontController
             exit;
         }
 
-        /**
-         * Retrieve order
-         */
-
         $checkoutId = (isset($payload_decoded['data']['checkout'])) ? $payload_decoded['data']['checkout']['id'] : $payload_decoded['data']['refund']['checkoutId'];
-        $request = "SELECT `id_order` FROM `" . _DB_PREFIX_ . "orders` WHERE coinqvest_checkout_id = '" . pSQL($checkoutId) . "'";
-        $result = Db::getInstance()->getRow($request);
+        $sql = "SELECT `order_id` FROM `" . _DB_PREFIX_ . "coinqvest_orders` WHERE coinqvest_checkout_id = '" . pSQL($checkoutId) . "'";
+        $result = Db::getInstance()->getRow($sql);
         if (!isset($result) || empty($result)) {
             $logger::write(print_r('[Webhook] No order found for COINQVEST checkout id ' . pSQL($checkoutId), true));
             $logger::write(print_r('[Webhook] Payload: ' . pSQL($payload), true));
@@ -43,17 +38,13 @@ class CoinqvestWebhookModuleFrontController extends ModuleFrontController
             exit;
         }
 
-        $order = new Order($result['id_order']);
+        $order = new Order($result['order_id']);
         if (!isset($order->id)) {
-            $logger::write(print_r('[Webhook] No order found for order id ' . (int)$result['id_order'], true));
+            $logger::write(print_r('[Webhook] No order found for order id ' . (int)$result['order_id'], true));
             $logger::write(print_r('[Webhook] Payload: ' . pSQL($payload), true));
             http_response_code(401);
             exit;
         }
-
-        /**
-         * Update order status
-         */
 
         if($this->isStateSet($order, $payload_decoded))
         {
@@ -176,18 +167,16 @@ class CoinqvestWebhookModuleFrontController extends ModuleFrontController
                 return true;
             }
         }
-
         return false;
     }
 
     public function setRefundId($order, $payload)
     {
-        $sql = "UPDATE " . _DB_PREFIX_ . "orders SET `coinqvest_refund_id` = '" . pSQL($payload['data']['refund']['id']) . "' WHERE id_order = " . (int)$order->id;
+        $sql = "UPDATE " . _DB_PREFIX_ . "coinqvest_orders SET `coinqvest_refund_id` = '" . pSQL($payload['data']['refund']['id']) . "' WHERE order_id = " . (int)$order->id;
         if (!Db::getInstance()->execute($sql))
         {
            return false;
         }
-
         return true;
     }
 }
