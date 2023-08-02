@@ -5,7 +5,7 @@
  * This file is the declaration of the module.
  *
  * @author COINQVEST <service@coinqvest.com>
- * @copyright 2022 COINQVEST
+ * @copyright 2023 COINQVEST
  * @license https://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -31,7 +31,7 @@ class Coinqvest extends PaymentModule
     {
         $this->name                   = 'coinqvest';
         $this->tab                    = 'payments_gateways';
-        $this->version                = '1.0.1';
+        $this->version                = '1.0.2';
         $this->author                 = 'COINQVEST';
         $this->controllers            = array('validation', 'webhook');
         $this->currencies             = true;
@@ -90,13 +90,19 @@ class Coinqvest extends PaymentModule
 
     public function createCoinqvestTable()
     {
-        Db::getInstance()->execute('CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'coinqvest_orders` (
-            `id` serial NOT NULL AUTO_INCREMENT,
-            `order_id` BIGINT(20) DEFAULT NULL,
-            `coinqvest_checkout_id` VARCHAR(20) DEFAULT NULL,
-            `coinqvest_refund_id` VARCHAR(20) DEFAULT NULL,
-            PRIMARY KEY (`id`)
-        );');
+        if(!Db::getInstance()->execute(
+            'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'coinqvest_orders` (
+                `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                `order_id` INT DEFAULT NULL,
+                `coinqvest_checkout_id` VARCHAR(20) DEFAULT NULL,
+                `coinqvest_refund_id` VARCHAR(20) DEFAULT NULL,
+                PRIMARY KEY (`id`)
+            );'
+        )) {
+            $logger = new Coinqvest\Sdk\CQLoggingService();
+            $logger::write(print_r('[Install] Failed to create table coinqvest_orders during module installation.', true));
+            return false;
+        }
         return true;
     }
 

@@ -194,7 +194,7 @@ class CoinqvestValidationModuleFrontController extends ModuleFrontController
 
         $sql = "INSERT INTO " . _DB_PREFIX_ . "coinqvest_orders (`order_id`, `coinqvest_checkout_id`) VALUES (" . (int)$order->id . ", '" . pSQL($id) . "')";
         if (!Db::getInstance()->execute($sql)) {
-            $logger::write(print_r('[Validation] Failed to insert into table coinqvest_order. ' . json_encode($checkout), true));
+            $logger::write(print_r('[Validation] Failed to insert into table coinqvest_orders (Prestashop Order Id ' . $order->id . ', COINQVEST Checkout Id ' . $id . ')', true));
             Tools::redirect($cancelUrl);
         }
 
