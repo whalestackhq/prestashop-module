@@ -1,0 +1,2 @@
+Please see the guide for detailed installation and configuration instructions:
+https://www.whalestack.com/en/prestashop
